@@ -22,6 +22,9 @@
 		"main": [
 			"haage.LocatorHeads"
 		],
+		"client": [
+			"haage.LocatorHeadsClient"
+		],
 		"modmenu": [
 			"haage.config.LocatorHeadsModMenuIntegration"
 		],

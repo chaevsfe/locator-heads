@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.2]
+### Changed
+- Replaced Hud mixin with `HudElementRegistry` for compass rendering, improving compatibility with Gnetum ([#21](https://github.com/Haage001/locator-heads/issues/21)). Thanks to [decce6](https://github.com/decce6) (Gnetum dev) for the suggestion.
+
 ## [2.4.1]
 ### Fixed
 - Fixed singleplayer world creation getting stuck on the loading screen ([#27](https://github.com/Haage001/locator-heads/issues/27)).
