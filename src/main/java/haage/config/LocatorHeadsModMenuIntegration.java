@@ -108,6 +108,11 @@ public class LocatorHeadsModMenuIntegration implements ModMenuApi {
                     .build());
 
             ConfigCategory filters = builder.getOrCreateCategory(Component.translatable("category.locator-heads.filters"));
+            filters.addEntry(entries.startBooleanToggle(Component.translatable("option.locator-heads.hide_bots"), current.hideBots)
+                    .setTooltip(tooltip("tooltip.locator-heads.hide_bots"))
+                    .setDefaultValue(true)
+                    .setSaveConsumer(value -> current.hideBots = value)
+                    .build());
             filters.addEntry(entries.startEnumSelector(Component.translatable("option.locator-heads.player_filter_mode"), LocatorHeadsConfig.PlayerFilterMode.class, current.playerFilterMode)
                     .setTooltip(tooltip("tooltip.locator-heads.player_filter_mode"))
                     .setDefaultValue(LocatorHeadsConfig.PlayerFilterMode.ALL)

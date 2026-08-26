@@ -21,6 +21,7 @@ public class LocatorHeadsConfig {
     public PlayerFilterMode playerFilterMode = PlayerFilterMode.ALL;
     public String includedPlayers = "";
     public String excludedPlayers = "";
+    public boolean hideBots = true;
 
     // Helper method to get the actual multiplier value
     public double getHeadSizeMultiplier() {

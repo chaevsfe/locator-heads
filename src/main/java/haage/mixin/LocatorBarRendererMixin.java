@@ -2,7 +2,9 @@ package haage.mixin;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import haage.LocatorHeads;
+import haage.util.BotDetector;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.contextualbar.LocatorBar;
 import net.minecraft.client.resources.WaypointStyle;
@@ -59,7 +61,7 @@ public class LocatorBarRendererMixin {
             var playerInfo = connection.getPlayerInfo(trackedWaypoint.id().left().get());
             if (playerInfo != null) {
                 String playerName = playerInfo.getProfile().name();
-                if (!locatorHeads$shouldShowPlayerHead(playerName)) { // filter hides completely
+                if (!locatorHeads$shouldShowPlayerHead(playerInfo)) { // filter hides completely
                     this.locatorHeads$shouldHideWaypoint = true;
                     return;
                 }
@@ -214,8 +216,11 @@ public class LocatorBarRendererMixin {
     }
 
     @Unique
-    private boolean locatorHeads$shouldShowPlayerHead(String playerName) {
-        if (LocatorHeads.CONFIG == null || LocatorHeads.CONFIG.playerFilterMode == null) return true;
+    private boolean locatorHeads$shouldShowPlayerHead(PlayerInfo playerInfo) {
+        if (LocatorHeads.CONFIG == null) return true;
+        if (LocatorHeads.CONFIG.hideBots && BotDetector.isBot(playerInfo)) return false;
+        if (LocatorHeads.CONFIG.playerFilterMode == null) return true;
+        String playerName = playerInfo.getProfile().name();
         switch (LocatorHeads.CONFIG.playerFilterMode) {
             case ALL: return true;
             case INCLUDE: return locatorHeads$isPlayerInList(playerName, LocatorHeads.CONFIG.includedPlayers);
