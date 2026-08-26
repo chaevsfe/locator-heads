@@ -19,7 +19,11 @@ public final class BotDetector {
         if (self == null) return false;
         if (self.getProfile().id().equals(info.getProfile().id())) return false;
 
-        return isOfflineAccount(info) && !isOfflineAccount(self);
+        if (isOfflineAccount(info) && !isOfflineAccount(self)) return true;
+
+        return self.getChatSession() != null
+                && info.getChatSession() == null
+                && info.getLatency() == 0;
     }
 
     private static boolean isOfflineAccount(PlayerInfo info) {
