@@ -5,15 +5,17 @@
 	"name": "Locator Heads",
 	"description": "Replaces waypoint icons with player heads in the locator bar. Shows real player skins with configurable team borders and smart name display options.",
 	"authors": [
-		"Haage"
+		"Haage",
+		"chaevsfe"
 	],
 	"contributors": [
 		"MCRcortex (original concept)"
 	],
 	"contact": {
-		"homepage": "https://modrinth.com/project/locator-heads",
-		"sources": "https://github.com/Haage001/locator-heads",
-		"issues": "https://github.com/Haage001/locator-heads/issues"
+		"homepage": "https://github.com/chaevsfe/locator-heads",
+		"sources": "https://github.com/chaevsfe/locator-heads",
+		"issues": "https://github.com/chaevsfe/locator-heads/issues",
+		"upstream": "https://modrinth.com/project/locator-heads"
 	},
 	"license": "LGPL-3.0",
 	"icon": "assets/locator-heads/icon.png",
