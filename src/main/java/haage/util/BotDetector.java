@@ -14,6 +14,7 @@ import net.minecraft.core.UUIDUtil;
 
 public final class BotDetector {
 
+    private static final int BOTS_BELOW_TAB_ORDER = -1000000;
     private static final long ZERO_LATENCY_GRACE_MS = 60_000L;
     private static final Map<PlayerInfo, Long> zeroLatencySince = new WeakHashMap<>();
     private static final Map<PlayerInfo, String> loggedDecisions = new WeakHashMap<>();
@@ -31,6 +32,8 @@ public final class BotDetector {
         if (self == null) return false;
         if (self.getProfile().id().equals(info.getProfile().id())) return false;
 
+        boolean serverMarked = info.getTabListOrder() == BOTS_BELOW_TAB_ORDER;
+        boolean serverMarksBots = serverMarked || anyEntryMarked(connection);
         boolean offline = isOfflineAccount(info) && !isOfflineAccount(self);
         boolean lonePlayerWorld = isUnpublishedSingleplayer(minecraft);
         boolean hasSession = info.getChatSession() != null;
@@ -47,7 +50,9 @@ public final class BotDetector {
                 && System.currentTimeMillis() - zeroSince >= ZERO_LATENCY_GRACE_MS;
 
         boolean bot;
-        if (offline || lonePlayerWorld) {
+        if (serverMarksBots) {
+            bot = serverMarked;
+        } else if (offline || lonePlayerWorld) {
             bot = true;
         } else if (hasSession) {
             bot = false;
@@ -57,7 +62,8 @@ public final class BotDetector {
             bot = sustainedZeroPing;
         }
 
-        String decision = "hidden=" + bot + " offline=" + offline + " lonePlayerWorld=" + lonePlayerWorld
+        String decision = "hidden=" + bot + " serverMarked=" + serverMarked + " serverMarksBots=" + serverMarksBots
+                + " offline=" + offline + " lonePlayerWorld=" + lonePlayerWorld
                 + " chatSession=" + hasSession + " sessionsOnServer=" + sessionsOnServer
                 + " zeroPing=" + (latency == 0) + " sustainedZeroPing=" + sustainedZeroPing;
         if (!decision.equals(loggedDecisions.get(info))) {
@@ -78,6 +84,13 @@ public final class BotDetector {
         if (!minecraft.hasSingleplayerServer()) return false;
         IntegratedServer server = minecraft.getSingleplayerServer();
         return server != null && !server.isPublished();
+    }
+
+    private static boolean anyEntryMarked(ClientPacketListener connection) {
+        for (PlayerInfo other : connection.getOnlinePlayers()) {
+            if (other.getTabListOrder() == BOTS_BELOW_TAB_ORDER) return true;
+        }
+        return false;
     }
 
     private static boolean anySessionPresent(ClientPacketListener connection) {
