@@ -97,6 +97,18 @@ public class LocatorBarRendererMixin {
         this.locatorHeads$skinOverride = null;
     }
 
+    @Redirect(method = "*", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+    private void locatorHeads$hideArrowForHiddenWaypoints(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, Identifier sprite, int x, int y, int w, int h) {
+        if (this.locatorHeads$shouldHideWaypoint && locatorHeads$isArrowSprite(sprite)) return;
+        guiGraphics.blitSprite(pipeline, sprite, x, y, w, h);
+    }
+
+    @Unique
+    private static boolean locatorHeads$isArrowSprite(Identifier sprite) {
+        String path = sprite.getPath();
+        return path.equals("hud/locator_bar_arrow_up") || path.equals("hud/locator_bar_arrow_down");
+    }
+
     @Unique
     private void locatorHeads$renderPlayerHead(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
         if (LocatorHeads.CONFIG == null || LocatorHeads.CONFIG.teamBorderThickness == null || this.minecraft.level == null || this.minecraft.getCameraEntity() == null) return;
